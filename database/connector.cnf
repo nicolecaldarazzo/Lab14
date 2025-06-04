@@ -1,7 +1,6 @@
 [client]
 user=root
-password=nicole1!
+password=root
 host=127.0.0.1
-port=3307
 database=bike_store_full
 raise_on_warnings=True

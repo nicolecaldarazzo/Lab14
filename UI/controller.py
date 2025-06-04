@@ -33,12 +33,19 @@ class Controller:
         #self._view.txt_result.controls.clear()
         self._view.txt_result.controls.append(ft.Text(f"Nodo di partenza: {nodo}"))
         for node in percorso:
-            if(node.order_id!=int(nodo)):
-                self._view.txt_result.controls.append(ft.Text(f"{node}"))
+            self._view.txt_result.controls.append(ft.Text(f"{node}"))
         self._view.update_page()
 
     def handleRicorsione(self, e):
-        pass
+        nodo = self._view._ddNode.value
+        percorso=self._model.getPercorsoPesoMassimo(int(nodo))
+        self._view.txt_result.controls.append(ft.Text("Il percorso di peso massimo è: "))
+        for node in percorso:
+            if node.order_id != int(nodo):
+                self._view.txt_result.controls.append(ft.Text(f"{node}"))
+        self._view.update_page()
+
+
 
     def fillDDNode(self):
         allNodes = self._model.getNodes()

@@ -7,6 +7,10 @@ class Model:
         self._grafo=nx.DiGraph()
         self._orders=[]
         self._visitati=None
+        self._parziale=[]
+        self.peso_attuale=10000000
+        self._maxPercorso=[]
+        self._maxPeso=0
 
     def getStores(self):
         return DAO.getStores()
@@ -39,4 +43,27 @@ class Model:
 
     #def cercaPercorsoMassimo(self, start, path=[], max_path=[], max_weight=0, current_weight=0):
     def cercaPercorsoMassimo(self,start):
-        return dfs_tree(self._grafo,self._idMap[start])
+        tree=nx.bfs_tree(self._grafo,self._idMap[start])
+        nodi=list(tree.nodes())
+        return nodi[1:]
+
+    def getPercorsoPesoMassimo(self,source):
+        source2=self._idMap[source]
+        percorso, peso=self._ricorsione(source2)
+        return percorso
+
+    def _ricorsione(self, nodo):
+        self._parziale.append(nodo)
+        if not list(self._grafo.successors(nodo)):
+            if self.peso_attuale>self._maxPeso:
+                self._maxPeso=self.peso_attuale
+                self._maxPercorso[:]=self._parziale
+            return self._maxPercorso,self._maxPeso
+        for successore in self._grafo.successors(nodo):
+            peso_arco=self._grafo[nodo][successore]["weight"]
+
+            if peso_arco<self.peso_attuale:
+                self._ricorsione(successore)
+        return self._maxPercorso, self._maxPeso
+
+
