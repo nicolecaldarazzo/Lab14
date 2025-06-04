@@ -49,15 +49,16 @@ class DAO():
             print("Connessione fallita")
         else:
             cursor = cnx.cursor(dictionary=True)
-            query = """select o1.order_id as id1, o2.order_id as id2,(oi2.quantity+oi.quantity) as peso
+            query = """select o1.order_id as id1, o2.order_id as id2,sum(oi2.quantity+oi.quantity) as peso
                     from orders o1, orders o2, order_items oi, order_items oi2 
                     where o1.store_id = %s
                     and o2.store_id = o1.store_id
                     and o2.order_id <> o1.order_id
                     and o1.order_date<o2.order_date 
-                    and o2.order_date between o1.order_date and date_add(o1.order_date, interval %s day)
+                    and o2.order_date between o1.order_date and date_add(o1.order_date, interval %s-1 day)
                     and o1.order_id=oi.order_id
-                    and o2.order_id =oi2.order_id """
+                    and o2.order_id =oi2.order_id 
+                    group by id1, id2"""
             cursor.execute(query, (store, giorni))
             for row in cursor:
                 if row["id1"] in idMap and row["id2"] in idMap:
